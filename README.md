@@ -4,7 +4,7 @@
 >
 > **First MCP server with deep Taiwan stock coverage** (TWSE / TPEx + three major institutional flows + chip data + monthly revenue). 85 tools across 14 categories + 6 resources. **Local-first** — runs in-process inside the Electron app, no API costs, no cloud dependency.
 
-**Current version**: MCP server `1.2.0` · Stock Analyzer app `0.47.2-beta` · Updated 2026-05-18
+**Current version**: MCP server `1.2.0` · Stock Analyzer app `0.47.4-beta` · Updated 2026-05-20
 
 ---
 
@@ -91,7 +91,7 @@ For non-Taiwan readers: Taiwan stock market has its own data ecosystem (TWSE, TP
 
 ### 1. Install Stock Analyzer
 
-Get the free Lite tier from [stockanalyzer.tw](https://stockanalyzer.tw). Version `0.47.2-beta` or later ships MCP server v1.2.0.
+Get the free Lite tier from [stockanalyzer.tw](https://stockanalyzer.tw). Version `0.47.4-beta` or later ships MCP server v1.2.0.
 
 ### 2. Configure Claude Desktop
 

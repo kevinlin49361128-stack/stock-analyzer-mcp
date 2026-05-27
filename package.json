@@ -1,0 +1,28 @@
+{
+  "name": "stock-analyzer-mcp",
+  "version": "1.2.1",
+  "description": "MCP server for Stock Analyzer — Taiwan + US stock-market analysis tools exposed via stdio Model Context Protocol",
+  "main": "mcp-server.js",
+  "scripts": {
+    "start": "node mcp-server.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "node-fetch": "^2.7.0"
+  },
+  "license": "MIT",
+  "author": "Lin Kaijie (Kevin Lin)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kevinlin49361128-stack/stock-analyzer-mcp"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "stock-analysis",
+    "taiwan-stock",
+    "tw-stock",
+    "us-stock",
+    "finance"
+  ]
+}

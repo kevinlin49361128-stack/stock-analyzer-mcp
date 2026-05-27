@@ -4,18 +4,38 @@
 >
 > **First MCP server with deep Taiwan stock coverage** (TWSE / TPEx + three major institutional flows + chip data + monthly revenue). 85 tools across 14 categories + 6 resources. **Local-first** — runs in-process inside the Electron app, no API costs, no cloud dependency.
 
-**Current version**: MCP server `1.2.0` · Stock Analyzer app `0.47.4-beta` · Updated 2026-05-20
+**Current version**: MCP server `1.2.1` · Stock Analyzer app `0.47.9-beta` · Updated 2026-05-27
 
 ---
 
-## Why this exists
+## ⚠️ How this MCP server actually works
 
-This is the **public documentation repo** for the MCP server that ships inside the [Stock Analyzer](https://stockanalyzer.tw) desktop app.
+This repo contains the **MCP shim source** (mcp-server.js + lib/ai-tools + Dockerfile). The shim is a **thin HTTP-to-stdio bridge** — when an MCP client invokes a tool, the shim proxies the call to `http://localhost:3000/api/*`, where the **Stock Analyzer desktop app's embedded Express backend** does the actual work (DB query, computation, analysis).
 
-The app itself is a commercial product (Lite tier free, Standard NT$1,499, Premium NT$2,999 — all one-time purchases, no subscription). This docs repo exists to:
-- Provide a public canonical link for MCP marketplaces (awesome-mcp-servers, mcpservers.org, PulseMCP)
-- Host the MCP integration guide separately from the closed app source
+> **The MCP server in this repo, run standalone (e.g. via `docker run`), can advertise its 85 tools through introspection but cannot execute them.** You need [Stock Analyzer](https://stockanalyzer.tw) running on the same machine for tools to actually return data.
+
+This split is intentional — the analysis engine + market data + license-gated features live in the closed-source desktop app; the MCP shim is open-source (MIT) so the integration surface is fully transparent.
+
+---
+
+## Why this repo exists
+
+The Stock Analyzer desktop app itself is a commercial product (Lite tier free, Standard NT$1,499, Premium NT$2,999 — all one-time purchases, no subscription). This repo exists to:
+- Open-source the **MCP shim layer** under MIT so marketplaces (awesome-mcp-servers, mcpservers.org, PulseMCP, Glama) can build & verify a working image
+- Provide a public canonical link for MCP discovery
+- Host the integration guide separately from the closed app source
 - Make Claude Desktop / Claude Code / agentic frameworks easy to configure against the bundled MCP server
+
+---
+
+## Build (Docker, for Glama / marketplaces)
+
+```bash
+docker build -t stock-analyzer-mcp .
+docker run -i --rm stock-analyzer-mcp   # stdio JSON-RPC on stdin/stdout
+```
+
+Image is ~258 MB (node:20-alpine + 2 npm deps). The build skips `better-sqlite3`, Electron, and other backend-only dependencies because the shim itself never imports them — all data calls go via HTTP to the locally-running Stock Analyzer app's `/api/*` endpoints.
 
 ---
 

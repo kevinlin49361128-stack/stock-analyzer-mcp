@@ -2,20 +2,6 @@ MIT License
 
 Copyright (c) 2025-2026 Lin Kaijie (Kevin Lin)
 
-This license applies to the contents of THIS REPOSITORY ONLY — the MCP server
-shim source code (mcp-server.js, lib/mcp-*.js, lib/ai-tools.js, lib/ai-tools/**),
-the build artifacts (Dockerfile, package.json), the documentation, and the
-integration examples.
-
-The MCP shim is a thin HTTP-to-stdio bridge — tool execution proxies via
-http://localhost:3000/api/* to the Stock Analyzer desktop application's
-embedded backend.
-
-The Stock Analyzer desktop application itself is closed-source commercial
-software with its own EULA — see https://stockanalyzer.tw for details. This
-MIT license does NOT grant any rights to the desktop application, its UI,
-its analysis engine, or its data assets.
-
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
@@ -33,3 +19,21 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+---
+
+## Scope (informational, not part of the MIT grant)
+
+The MIT License above applies to the contents of THIS REPOSITORY ONLY — the MCP
+server shim source code (mcp-server.js, lib/mcp-*.js, lib/ai-tools.js,
+lib/ai-tools/**), the build artifacts (Dockerfile, package.json), the
+documentation, and the integration examples.
+
+The MCP shim is a thin HTTP-to-stdio bridge — tool execution proxies via
+http://localhost:3000/api/* to the Stock Analyzer desktop application's
+embedded backend.
+
+The Stock Analyzer desktop application itself is closed-source commercial
+software with its own EULA — see https://stockanalyzer.tw for details. This
+MIT license does NOT grant any rights to the desktop application, its UI, its
+analysis engine, or its data assets.

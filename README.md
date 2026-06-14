@@ -2,7 +2,7 @@
 
 > 📡 The **Model Context Protocol** server bundled with [Stock Analyzer](https://stockanalyzer.tw) — a macOS desktop app for Taiwan + US stock market analysis.
 >
-> **First MCP server with deep Taiwan stock coverage** (TWSE / TPEx + three major institutional flows + chip data + monthly revenue). 85 tools across 14 categories + 6 resources. **Local-first** — runs in-process inside the Electron app, no API costs, no cloud dependency.
+> **An MCP server with deep Taiwan stock coverage** (TWSE / TPEx + three major institutional flows + chip data + monthly revenue). 87 tools across 14 categories + 6 resources. **Local-first** — runs in-process inside the Electron app, no API costs, no cloud dependency.
 
 **Current version**: MCP server `1.2.1` · Stock Analyzer app `0.47.9-beta` · Updated 2026-05-27
 
@@ -12,7 +12,7 @@
 
 This repo contains the **MCP shim source** (mcp-server.js + lib/ai-tools + Dockerfile). The shim is a **thin HTTP-to-stdio bridge** — when an MCP client invokes a tool, the shim proxies the call to `http://localhost:3000/api/*`, where the **Stock Analyzer desktop app's embedded Express backend** does the actual work (DB query, computation, analysis).
 
-> **The MCP server in this repo, run standalone (e.g. via `docker run`), can advertise its 85 tools through introspection but cannot execute them.** You need [Stock Analyzer](https://stockanalyzer.tw) running on the same machine for tools to actually return data.
+> **The MCP server in this repo, run standalone (e.g. via `docker run`), can advertise its 87 tools through introspection but cannot execute them.** You need [Stock Analyzer](https://stockanalyzer.tw) running on the same machine for tools to actually return data.
 
 This split is intentional — the analysis engine + market data + license-gated features live in the closed-source desktop app; the MCP shim is open-source (MIT) so the integration surface is fully transparent.
 
@@ -41,7 +41,7 @@ Image is ~258 MB (node:20-alpine + 2 npm deps). The build skips `better-sqlite3`
 
 ## What's in this MCP server
 
-### 85 tools across 14 categories
+### 87 tools across 14 categories
 
 | Category | Tools | Examples |
 |---|---|---|
@@ -86,7 +86,7 @@ Set `SAA_MCP_PROFILE` env var to gate which tools are visible to the LLM client:
 | Profile | Tools exposed | Use case |
 |---|---|---|
 | `default` (omit) | All 85 | Your personal Claude Desktop |
-| `safe_readonly` | 70 read-only tools | Shared / untrusted LLM clients — blocks `add_trade` / `delete_*` / `upsert_thesis` / `set_price_alert` / etc. |
+| `safe_readonly` | 72 read-only tools | Shared / untrusted LLM clients — blocks `add_trade` / `delete_*` / `upsert_thesis` / `set_price_alert` / etc. |
 
 Resources stay available in both profiles (they're read-only by definition).
 
@@ -103,7 +103,7 @@ Resources stay available in both profiles (they're read-only by definition).
 | Stockflow (Yahoo) | ⚠️ Spotty TW data | ✅ Full | ❌ Cloud | Free (rate-limited) |
 | **Stock Analyzer MCP** | ✅ **Deep TWSE + TPEx + institutional + chip** | ✅ Full | ✅ **Local SQLite** | One-time license (Lite free) |
 
-For non-Taiwan readers: Taiwan stock market has its own data ecosystem (TWSE, TPEx OpenAPI, three major institutional investors, monthly revenue reporting) that's nearly absent from English-speaking financial data platforms. If you want an AI agent that can answer "How are TSMC's institutional investors trading lately?" or "Find me TW small-caps with >30% YoY revenue growth", Stock Analyzer MCP is currently the only viable option.
+For non-Taiwan readers: Taiwan stock market has its own data ecosystem (TWSE, TPEx OpenAPI, three major institutional investors, monthly revenue reporting) that's nearly absent from English-speaking financial data platforms. If you want an AI agent that can answer "How are TSMC's institutional investors trading lately?" or "Find me TW small-caps with >30% YoY revenue growth", Stock Analyzer MCP is built for exactly this — deterministic TW chip/institutional/revenue tools that English-focused MCP servers generally lack.
 
 ---
 
@@ -166,7 +166,7 @@ Claude will orchestrate multiple tool calls (or `@`-mentions for resources) and 
 - 🛡️ Risk (volatility, drawdown history, regime context)
 - 🎯 Synthesizer (sees all four; produces a 6-level action: `strong_buy` → `avoid`)
 
-Each agent uses a distinct subset of the 85 tools. Output includes per-agent reasoning + final action + confidence score. ~$0.16/call LLM cost (Anthropic Sonnet / OpenAI).
+Each agent uses a distinct subset of the 87 tools. Output includes per-agent reasoning + final action + confidence score. ~$0.16/call LLM cost (Anthropic Sonnet / OpenAI).
 
 ### 🌅 `portfolio_daily_briefing` — Lite tier
 Pre-market or post-market portfolio briefing. Aggregates current holdings, unrealized P&L, sector exposure, relevant macro / institutional flow into an actionable summary.
@@ -199,7 +199,7 @@ Hands the agent objective indicators to write narrative review against.
 ## Design philosophy
 
 - **Local-first**: All data lives in `~/.twse-analyzer/stock_history.db` (SQLite, single file). MCP server runs in-process inside the Electron app via stdio transport.
-- **BYOK LLM**: SAA itself has an AI Hub that consumes the same 85 tools. Bring your own keys (Claude / GPT / Gemini / Ollama). The MCP server itself isn't tied to any LLM — it just exposes deterministic data + a few LLM-backed aggregators.
+- **BYOK LLM**: SAA itself has an AI Hub that consumes the same 87 tools. Bring your own keys (Claude / GPT / Gemini / Ollama). The MCP server itself isn't tied to any LLM — it just exposes deterministic data + a few LLM-backed aggregators.
 - **Transparent methodology**: 16 bilingual methodology pages (zh-TW + en) explain every analytical tool's formula, data source, and limitations. Available at `/methodology.html` inside the app.
 - **No active trading signals**: Research output only — not order execution. Regulatory + product positioning decision.
 - **Cost honesty**: Every tool surfaces its worst-case LLM cost upfront via `_meta.tw.stockanalyzer/estimated_cost_usd`. No hidden cloud-API spend.

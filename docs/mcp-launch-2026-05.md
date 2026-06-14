@@ -27,11 +27,11 @@ Searching the 2026 MCP landscape for "finance / stock / trading":
 | Stockflow (Yahoo) | ⚠️ Yahoo's spotty TW data | ✅ Full | ❌ Cloud API | Free (rate-limited) |
 | **Stock Analyzer MCP** | ✅ **Deep TWSE + TPEx + institutional flow + chip data** | ✅ Full | ✅ **Local SQLite** | One-time purchase ($99-149) |
 
-For non-Taiwan readers: Taiwan stock market has its own data ecosystem (TWSE, TPEx OpenAPI, three major institutional investors, monthly revenue reporting) that's almost entirely absent from English-speaking financial data platforms. If you want an AI agent that can answer "幫我看 2330 (TSMC) 最近三大法人是怎麼進出的?" / "How are TSMC's institutional investors trading lately?", Stock Analyzer's MCP is currently the only viable option.
+For non-Taiwan readers: Taiwan stock market has its own data ecosystem (TWSE, TPEx OpenAPI, three major institutional investors, monthly revenue reporting) that's almost entirely absent from English-speaking financial data platforms. If you want an AI agent that can answer "幫我看 2330 (TSMC) 最近三大法人是怎麼進出的?" / "How are TSMC's institutional investors trading lately?", Stock Analyzer's MCP is purpose-built for this — deterministic TW chip/institutional/revenue tools that English-focused MCP servers generally lack.
 
 ---
 
-## What 81 tools? (Category breakdown)
+## What 81 tools? (Category breakdown — as of 2026-05; current count 87, see README)
 
 | Category | Tools | Examples |
 |---|---|---|

@@ -2,9 +2,9 @@
 
 > 📡 The **Model Context Protocol** server bundled with [Stock Analyzer](https://stockanalyzer.tw) — a macOS desktop app for Taiwan + US stock market analysis.
 >
-> **An MCP server with deep Taiwan stock coverage** (TWSE / TPEx + three major institutional flows + chip data + monthly revenue). 87 tools across 14 categories + 6 resources. **Local-first** — runs in-process inside the Electron app, no API costs, no cloud dependency.
+> **An MCP server with deep Taiwan stock coverage** (TWSE / TPEx + three major institutional flows + chip data + monthly revenue). 92 tools across 15 categories + 6 resources. **Local-first** — runs in-process inside the Electron app, no API costs, no cloud dependency.
 
-**Current version**: MCP server `1.2.1` · Stock Analyzer app `0.47.9-beta` · Updated 2026-05-27
+**Current version**: MCP server `1.3.0` · Stock Analyzer app `0.48.0-beta` · Updated 2026-06-30
 
 ---
 
@@ -12,7 +12,7 @@
 
 This repo contains the **MCP shim source** (mcp-server.js + lib/ai-tools + Dockerfile). The shim is a **thin HTTP-to-stdio bridge** — when an MCP client invokes a tool, the shim proxies the call to `http://localhost:3000/api/*`, where the **Stock Analyzer desktop app's embedded Express backend** does the actual work (DB query, computation, analysis).
 
-> **The MCP server in this repo, run standalone (e.g. via `docker run`), can advertise its 87 tools through introspection but cannot execute them.** You need [Stock Analyzer](https://stockanalyzer.tw) running on the same machine for tools to actually return data.
+> **The MCP server in this repo, run standalone (e.g. via `docker run`), can advertise its 92 tools through introspection but cannot execute them.** You need [Stock Analyzer](https://stockanalyzer.tw) running on the same machine for tools to actually return data.
 
 This split is intentional — the analysis engine + market data + license-gated features live in the closed-source desktop app; the MCP shim is open-source (MIT) so the integration surface is fully transparent.
 
@@ -41,11 +41,11 @@ Image is ~258 MB (node:20-alpine + 2 npm deps). The build skips `better-sqlite3`
 
 ## What's in this MCP server
 
-### 87 tools across 14 categories
+### 92 tools across 15 categories
 
 | Category | Tools | Examples |
 |---|---|---|
-| market (13) | Quotes, history, heatmap, sector ranking, news, FX, seasonality, ETF holdings | `get_stock_price`, `get_market_heatmap`, `get_seasonality` |
+| market (14) | Quotes, history, heatmap, sector ranking, news, FX, seasonality, ETF holdings, trading-day status | `get_stock_price`, `get_market_heatmap`, `get_seasonality` |
 | chips (6) | Three major institutional flows, fund flow Sankey, insider alerts, abnormal blocks, margin ranking | `get_institutional_flow`, `get_fund_flow_sankey` |
 | fundamentals (6) | Financial statements, monthly revenue, dividends, EPS, DCF valuation | `get_financial_statements`, `calculate_dcf` |
 | technical (5) | RSI / MACD / KD / Bollinger / Beta / correlation / candlestick patterns | `get_technical_indicators`, `detect_kline_patterns` |
@@ -53,12 +53,13 @@ Image is ~258 MB (node:20-alpine + 2 npm deps). The build skips `better-sqlite3`
 | sentiment (5) | News sentiment, market sentiment, per-stock sentiment, forecasts, entry strategies | `get_stock_sentiment_v2`, `get_sentiment_forecasts` |
 | portfolio (11) | Holdings, P&L, performance, concentration, signals, trade CRUD | `get_portfolio`, `get_portfolio_concentration` |
 | backtest (5) | Single-stock, multi-strategy, grid search, MC factor mining, random portfolio | `backtest_strategy`, `monte_carlo_factor_mining` |
-| risk (3) | VaR, systemic risk, portfolio optimization | `calculate_portfolio_var`, `get_systemic_risk` |
-| ai workflow (6) | Full-stock analysis, screener, workflows, notes, **+ deep-dive debate + daily briefing + candidate comparison + post-trade review** | `research_stock_deep_dive`, `portfolio_daily_briefing` |
-| thesis (6) | Investment hypothesis CRUD | `upsert_thesis` |
+| risk (6) | VaR, systemic risk, portfolio optimization, marginal/component VaR contribution, stress test, scenario stress propagation | `get_systemic_risk`, `get_risk_contribution`, `run_scenario` |
+| ai workflow (7) | Full-stock analysis, screener, workflows, notes, **+ deep-dive debate + daily briefing + candidate comparison + post-trade review** | `research_stock_deep_dive`, `portfolio_daily_briefing` |
+| thesis (7) | Investment hypothesis CRUD + quality evaluation | `upsert_thesis`, `evaluate_thesis_quality` |
 | watchlist (4) | Watchlist CRUD | `add_watchlist` |
 | alert (3) | Price alerts | `set_price_alert` |
 | backfill (2) | Admin data backfill | `trigger_backfill` |
+| forecast (3) | Price probability cone (GBM Monte Carlo), un-gameable forecast-calibration track-record, TW pre-open cross-market context | `get_price_forecast`, `get_forecast_calibration`, `get_preopen_context` |
 
 Every tool carries:
 - **`annotations.readOnlyHint`** — whether the tool modifies state (clients auto-confirm before destructive ops)
@@ -166,7 +167,7 @@ Claude will orchestrate multiple tool calls (or `@`-mentions for resources) and 
 - 🛡️ Risk (volatility, drawdown history, regime context)
 - 🎯 Synthesizer (sees all four; produces a 6-level action: `strong_buy` → `avoid`)
 
-Each agent uses a distinct subset of the 87 tools. Output includes per-agent reasoning + final action + confidence score. ~$0.16/call LLM cost (Anthropic Sonnet / OpenAI).
+Each agent uses a distinct subset of the 92 tools. Output includes per-agent reasoning + final action + confidence score. ~$0.16/call LLM cost (Anthropic Sonnet / OpenAI).
 
 ### 🌅 `portfolio_daily_briefing` — Lite tier
 Pre-market or post-market portfolio briefing. Aggregates current holdings, unrealized P&L, sector exposure, relevant macro / institutional flow into an actionable summary.
@@ -199,7 +200,7 @@ Hands the agent objective indicators to write narrative review against.
 ## Design philosophy
 
 - **Local-first**: All data lives in `~/.twse-analyzer/stock_history.db` (SQLite, single file). MCP server runs in-process inside the Electron app via stdio transport.
-- **BYOK LLM**: SAA itself has an AI Hub that consumes the same 87 tools. Bring your own keys (Claude / GPT / Gemini / Ollama). The MCP server itself isn't tied to any LLM — it just exposes deterministic data + a few LLM-backed aggregators.
+- **BYOK LLM**: SAA itself has an AI Hub that consumes the same 92 tools. Bring your own keys (Claude / GPT / Gemini / Ollama). The MCP server itself isn't tied to any LLM — it just exposes deterministic data + a few LLM-backed aggregators.
 - **Transparent methodology**: 16 bilingual methodology pages (zh-TW + en) explain every analytical tool's formula, data source, and limitations. Available at `/methodology.html` inside the app.
 - **No active trading signals**: Research output only — not order execution. Regulatory + product positioning decision.
 - **Cost honesty**: Every tool surfaces its worst-case LLM cost upfront via `_meta.tw.stockanalyzer/estimated_cost_usd`. No hidden cloud-API spend.

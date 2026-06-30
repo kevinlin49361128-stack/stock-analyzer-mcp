@@ -39,8 +39,11 @@ process.env.BASE_URL = process.env.BASE_URL || `http://localhost:${PORT}`;
 
 const aiTools = require('./lib/ai-tools');
 
-const SERVER_VERSION = '1.2.1';
+const SERVER_VERSION = '1.3.0';
 // changelog:
+//   1.3.0 (2026-06-30) — + forecast category: get_price_forecast (GBM probability cone) /
+//                          get_forecast_calibration (un-gameable track-record) / get_preopen_context (TW) /
+//                          run_scenario (stress propagation); registry synced to 92 tools across 15 categories
 //   1.2.1 (2026-05-21) — + saa://memory/{stockId} template resource (Investor Memory layer)
 //   1.2.0 (2026-05-18, Sprint C) — + compare_investment_candidates / post_trade_review
 //                                    / saa://system/info resource / tools_schema_version surface
